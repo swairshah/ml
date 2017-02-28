@@ -1,6 +1,6 @@
 import numpy as np
 from cs231nlib.utils import *
-from nn2 import NearestNeighbor
+from neighbor import NearestNeighbor
 
 Xtr, Ytr, Xte, Yte = load_CIFAR10("datasets/cifar-10-batches-py/")
 # flatten out images
