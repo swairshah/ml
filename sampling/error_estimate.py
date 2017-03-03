@@ -13,8 +13,9 @@ from sklearn.datasets import make_regression
 
 m = 1000
 n = 50
-I = 100
+I = 10
 r = 10
+weighted = False
 
 X, y, coef = make_regression(n_samples = m, n_features = n, noise = 10, coef = True)
 
@@ -24,8 +25,6 @@ lm.fit(X,y)
 y_pred = lm.predict(X)
 e = (y - y_pred)**2
 w = e/np.sum(e)
-print w
-print 
 err_base = np.mean(e)
 
 
@@ -43,17 +42,21 @@ imp_errors = []
 for i in range(I):
     idx = np.random.choice(range(len(X)), r, p = w)
     w1 = w[idx]
-    #X1 = X[idx,:]/w1[:,None]
-    #y1 = y[idx]/w1
-    X1 = X[idx,:]
-    y1 = y[idx]
-    e = (lm.predict(X1) - y1)**2
-    err = np.mean(e)
-    imp_errors.append(err)
+    if weighted:
+        X1 = X[idx,:]/(m*w1[:,None])
+        y1 = y[idx]/(m*w1[:,None])
+    else:
+        X1 = X[idx,:]
+        y1 = y[idx]
+    #X1 = X[idx,:]
+    #y1 = y[idx]
+    e = np.mean((lm.predict(X1) - y1)**2)
+    imp_errors.append(e)
 
 
+print imp_errors, unif_errors
 print "base error: %.2f" % err_base
-print "variance importance %.2f" % np.var((imp_errors)
+print "variance importance %.2f" % np.var(imp_errors)
 print "variance uniform %.2f" % np.var(unif_errors)
 
 plt.subplot(211)
